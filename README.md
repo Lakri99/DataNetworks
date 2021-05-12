@@ -57,5 +57,5 @@ python serverTemplate.py
 python clientTemplate.py [LIST/UPLOAD/DOWNLOAD fileID]
 ```
 
-**Results**
+### Results
 log directory contains the results of test run.
