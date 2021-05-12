@@ -4,7 +4,7 @@
 from socket import *
 import hashlib
 import os
-import time
+import sys
 #
 # Generate md5 hash function
 #
@@ -18,6 +18,12 @@ def generate_md5_hash (file_data):
 serverPort = 7701
 serverURL = "localhost"
 FORMAT = "UTF-8"
+
+# 
+# Get the command from cmd line arg
+# 
+command = sys.argv[1]
+
 # 
 # Create TCP socket for future connections
 #
@@ -40,65 +46,61 @@ print("Client connected to server: " + serverURL + ":" + str(serverPort))
 #close TCP connection
 
 # Send list files 
-clientSocket.send(b'LIST_FILES')
-result = clientSocket.recv(4096)
-result = result.decode("UTF-8")
-print("Result from server: " + result)
-# time.sleep(5)
+def list(clientSocket):
+    clientSocket.send(b'LIST_FILES')
+    result = clientSocket.recv(4096)
+    result = result.decode("UTF-8")
+    print("\n Result from server: " + result)
 
 # Upload files
-clientSocket.send(b'UPLOAD')
-result = clientSocket.recv(4096)
-result = result.decode("UTF-8")
-print(result)
-if result:
-    filename = 'The_file.jpg'
-    filesize = os.path.getsize(filename)
-    message = bytes(filename + ';'+str(filesize), FORMAT)
-    print(message)
-    clientSocket.send(message)
+def upload(clientSocket):
+    clientSocket.send(b'UPLOAD')
     result = clientSocket.recv(4096)
-    result = result.decode(FORMAT)
-    if result == 'READY':
-        data = open(filename, 'rb')
-        data = data.read()
-        clientSocket.sendall(data)
-        hash_rec = clientSocket.recv(4096)
-        # hash_rec = hash.decode("ascii")
-        hash_gen = generate_md5_hash(data)
-        print(hash_gen)
-        print(hash_rec)
-        if hash_rec.decode('utf-8') == hash_gen:
-            print("correct")
-            clientSocket.send(b'SUCCESS')
-#             time.sleep(5)
-
-
-clientSocket.send(b'LIST_FILES')
-result = clientSocket.recv(1024)
-result = result.decode("UTF-8")
-print("Result from server: " + result)
-time.sleep(10)
-
+    result = result.decode("UTF-8")
+    print("\n Message from server: ", result)
+    if result:
+        filename = 'The_file.jpg'
+        filesize = os.path.getsize(filename)
+        message = bytes(filename + ';'+str(filesize), FORMAT)
+        clientSocket.send(message)
+        result = clientSocket.recv(4096)
+        result = result.decode(FORMAT)
+        if result == 'READY':
+            data = open(filename, 'rb')
+            data = data.read()
+            clientSocket.sendall(data)
+            hash_rec = clientSocket.recv(4096)
+            hash_gen = generate_md5_hash(data)
+            if hash_rec.decode('utf-8') == hash_gen:
+                clientSocket.send(b'SUCCESS')
 
 # DOWNLOAD
-fileid_rec = '6008994857f03e089549f58db518f5d9'
-clientSocket.send(b'DOWNLOAD')
-result = clientSocket.recv(1024)
-result = result.decode("UTF-8")
-print("Message from server: " + result)
-clientSocket.send(bytes(fileid_rec, 'utf-8'))
+def download(clientSocket, fileid_rec):
+    # fileid_rec = '6008994857f03e089549f58db518f5d9'
+    clientSocket.send(b'DOWNLOAD')
+    result = clientSocket.recv(1024)
+    result = result.decode("UTF-8")
+    print("\n Message from server: " + result)
+    clientSocket.send(bytes(fileid_rec, 'utf-8'))
 
-data = b''
-data += clientSocket.recv(65536)
-data += clientSocket.recv(65536)
-data += clientSocket.recv(65536)
-# import pdb;pdb.set_trace()
-hash = generate_md5_hash(data)
-if hash == fileid_rec:
-    print("correct")
-    clientSocket.send(b'SUCCESS')
-    time.sleep(5)
+    data = b''
+    data += clientSocket.recv(65536)
+    data += clientSocket.recv(65536)
+    data += clientSocket.recv(65536)
+    hash = generate_md5_hash(data)
+    if hash == fileid_rec:
+        clientSocket.send(b'SUCCESS')
 
+
+if command == "LIST":
+    list(clientSocket)
+elif command == "UPLOAD":
+    upload(clientSocket)
+elif command == "DOWNLOAD":
+    fileid_rec = sys.argv[2]
+    if fileid_rec:
+        download(clientSocket, fileid_rec)
+    else:
+        print("\n Incorrect file ID, please try again...")
 
 clientSocket.close()
