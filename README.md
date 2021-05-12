@@ -56,3 +56,6 @@ python serverTemplate.py
 ```console
 python clientTemplate.py [LIST/UPLOAD/DOWNLOAD fileID]
 ```
+
+**Results**
+log directory contains the results of test run.

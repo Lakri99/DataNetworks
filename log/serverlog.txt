@@ -1,0 +1,17 @@
+(base) root@3a45cbf845e8:/home/DataNetworks/DN/Assignment03/server# /opt/conda/bin/python serverTemplate.py
+
+ Server is listening on port: 7701
+
+ Message recieved from client: LIST_FILES
+
+ Message recieved from client: UPLOAD
+
+ Message from client:  ['The_file.jpg', '194560']
+
+ Message from client: SUCCESS
+
+ Message recieved from client: LIST_FILES
+
+ Message recieved from client: DOWNLOAD
+
+ Result fom client: SUCCESS

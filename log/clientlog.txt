@@ -1,0 +1,16 @@
+(base) root@3a45cbf845e8:/home/DataNetworks/DN/Assignment03/client# /opt/conda/bin/python clientTemplate.py LIST
+Client connected to server: localhost:7701
+
+ Result from server: There are no files available
+(base) root@3a45cbf845e8:/home/DataNetworks/DN/Assignment03/client# /opt/conda/bin/python clientTemplate.py UPLOAD
+Client connected to server: localhost:7701
+
+ Message from server:  Please send the file name and file size
+(base) root@3a45cbf845e8:/home/DataNetworks/DN/Assignment03/client# /opt/conda/bin/python clientTemplate.py LIST
+Client connected to server: localhost:7701
+
+ Result from server: 6008994857f03e089549f58db518f5d9;The_file.jpg;194560
+(base) root@3a45cbf845e8:/home/DataNetworks/DN/Assignment03/client# /opt/conda/bin/python clientTemplate.py DOWNLOAD 6008994857f03e089549f58db518f5d9
+Client connected to server: localhost:7701
+
+ Message from server: SEND file ID
